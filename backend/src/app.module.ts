@@ -17,6 +17,7 @@ import { EmailModule } from "./email/email.module";
 import { RecurringSplitsModule } from './recurring-splits/recurring-splits.module';
 import { ReceiptsModule } from './receipts/receipts.module';
 import { SplitHistoryModule } from './split-history/split-history.module';
+import { ActivitiesModule } from './modules/activities/activities.module';
 
 // Load environment variables
 dotenv.config({
@@ -66,6 +67,7 @@ dotenv.config({
     RecurringSplitsModule,
     ReceiptsModule,
     SplitHistoryModule,
+    ActivitiesModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
