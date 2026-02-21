@@ -73,16 +73,18 @@ export function NotificationCenter() {
         </div>
       </header>
 
-      <div className="mb-4 flex flex-wrap items-center gap-4">
-        <button
-          type="button"
-          onClick={simulateNew}
-          className="text-sm text-accent hover:underline"
-          data-testid="simulate-notification"
-        >
-          Simulate new notification
-        </button>
-      </div>
+      {import.meta.env.DEV && (
+        <div className="mb-4 flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            onClick={simulateNew}
+            className="text-sm text-accent hover:underline"
+            data-testid="simulate-notification"
+          >
+            Simulate new notification
+          </button>
+        </div>
+      )}
 
       <div className="mb-4">
         <p className="text-sm text-muted-theme mb-2">Filter by type</p>

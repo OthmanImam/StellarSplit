@@ -1,3 +1,4 @@
+import type { ComponentType, MouseEvent } from "react";
 import { Link } from "react-router";
 import {
   Bell,
@@ -10,10 +11,9 @@ import {
   CreditCard,
 } from "lucide-react";
 import type { Notification, NotificationType } from "../../types/notifications";
-import { NOTIFICATION_TYPE_LABELS } from "../../types/notifications";
 import { useNotificationsStore } from "../../store/notifications";
 
-const TYPE_ICONS: Record<NotificationType, React.ComponentType<{ className?: string }>> = {
+const TYPE_ICONS: Record<NotificationType, ComponentType<{ className?: string }>> = {
   split_invitation: Users,
   payment_reminder: CreditCard,
   payment_received: Receipt,
@@ -45,13 +45,12 @@ interface NotificationItemProps {
 export function NotificationItem({ notification, compact = false }: NotificationItemProps) {
   const { markAsRead, markAsUnread } = useNotificationsStore();
   const Icon = TYPE_ICONS[notification.type] ?? Bell;
-  const typeLabel = NOTIFICATION_TYPE_LABELS[notification.type];
   const isUnread = !notification.read;
 
   const content = (
     <>
       <div
-        className={`flex shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-theme border-theme border ${isUnread ? "bg-accent/10 text-accent" : "bg-surface text-theme"}`}
+        className={`flex shrink-0 w-10 h-10 rounded-full items-center justify-center bg-theme border-theme border ${isUnread ? "bg-accent/10 text-accent" : "bg-surface text-theme"}`}
       >
         <Icon className="w-5 h-5" />
       </div>
@@ -67,7 +66,7 @@ export function NotificationItem({ notification, compact = false }: Notification
     </>
   );
 
-  const toggleRead = (e: React.MouseEvent) => {
+  const toggleRead = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (notification.read) {
@@ -100,7 +99,7 @@ export function NotificationItem({ notification, compact = false }: Notification
             className="shrink-0 self-start text-xs text-muted-theme hover:text-theme underline"
             aria-label={notification.read ? "Mark as unread" : "Mark as read"}
           >
-            {notification.read ? "Unread" : "Read"}
+            {notification.read ? "Mark as unread" : "Mark as read"}
           </button>
         )}
       </Link>
@@ -120,7 +119,7 @@ export function NotificationItem({ notification, compact = false }: Notification
           className="shrink-0 self-start text-xs text-muted-theme hover:text-theme underline"
           aria-label={notification.read ? "Mark as unread" : "Mark as read"}
         >
-          {notification.read ? "Unread" : "Read"}
+          {notification.read ? "Mark as unread" : "Mark as read"}
         </button>
       )}
     </div>

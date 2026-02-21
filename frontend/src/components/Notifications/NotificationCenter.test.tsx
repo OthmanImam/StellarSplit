@@ -1,15 +1,17 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import type { ReactElement } from "react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, it, expect, beforeEach } from "vitest";
 import { NotificationCenter } from "./NotificationCenter";
 import { useNotificationsStore } from "../../store/notifications";
+import { resetNotificationsForTesting } from "../../test-utils/notifications";
 
-const wrap = (ui: React.ReactElement) =>
+const wrap = (ui: ReactElement) =>
   render(<MemoryRouter>{ui}</MemoryRouter>);
 
 describe("NotificationCenter", () => {
   beforeEach(() => {
-    useNotificationsStore.getState().resetForTesting();
+    resetNotificationsForTesting();
   });
 
   it("renders notification center page", () => {
@@ -49,11 +51,20 @@ describe("NotificationCenter", () => {
     expect(screen.getByText("No notifications yet.")).toBeInTheDocument();
   });
 
-  it("simulate new notification adds an item", () => {
+  it("adding a notification via store updates the list", () => {
     useNotificationsStore.getState().clearAll();
     wrap(<NotificationCenter />);
     expect(screen.getByTestId("empty-state")).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId("simulate-notification"));
+
+    act(() => {
+      useNotificationsStore.getState().addNotification({
+        type: "system_announcement",
+        title: "Test",
+        message: "Test message",
+      });
+    });
+
     expect(screen.queryByTestId("empty-state")).not.toBeInTheDocument();
+    expect(screen.getByText("Test")).toBeInTheDocument();
   });
 });

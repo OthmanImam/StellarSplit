@@ -12,8 +12,6 @@ interface NotificationsState {
   addNotification: (notification: Omit<Notification, "id" | "read" | "createdAt">) => void;
   removeNotification: (id: string) => void;
   unreadCount: () => number;
-  /** Reset to initial demo state (for tests) */
-  resetForTesting: () => void;
 }
 
 function createNotification(
@@ -27,50 +25,8 @@ function createNotification(
   };
 }
 
-const DEMO_NOTIFICATIONS: Notification[] = [
-  createNotification({
-    type: "split_invitation",
-    title: "Split invitation",
-    message: "Alex invited you to split \"Weekend dinner\".",
-    actionUrl: "/split/1",
-  }),
-  createNotification({
-    type: "payment_reminder",
-    title: "Payment reminder",
-    message: "You have a pending payment of $25.00 for \"Team lunch\".",
-    actionUrl: "/split/2",
-  }),
-  createNotification({
-    type: "payment_received",
-    title: "Payment received",
-    message: "Jordan paid $15.00 for \"Coffee run\".",
-  }),
-  createNotification({
-    type: "split_completed",
-    title: "Split completed",
-    message: "\"Trip to the beach\" has been settled.",
-    actionUrl: "/split/3",
-  }),
-  createNotification({
-    type: "friend_request",
-    title: "Friend request",
-    message: "Sam wants to add you as a friend.",
-    actionUrl: "/friends",
-  }),
-  createNotification({
-    type: "system_announcement",
-    title: "New feature",
-    message: "Multi-currency splits are now available.",
-  }),
-].map((n, i) => ({
-  ...n,
-  id: `demo-${i}`,
-  read: i % 2 === 0,
-  createdAt: new Date(Date.now() - (i + 1) * 3600000).toISOString(),
-}));
-
 export const useNotificationsStore = create<NotificationsState>((set, get) => ({
-  notifications: DEMO_NOTIFICATIONS,
+  notifications: [],
   typeFilter: "all",
 
   markAsRead: (id) =>
@@ -111,10 +67,4 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
 
   unreadCount: () =>
     get().notifications.filter((n) => !n.read).length,
-
-  resetForTesting: () =>
-    set({
-      notifications: DEMO_NOTIFICATIONS.map((n) => ({ ...n })),
-      typeFilter: "all",
-    }),
 }));

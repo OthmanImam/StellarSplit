@@ -26,6 +26,8 @@ export function NotificationDropdown({
 
   return (
     <div
+      role="dialog"
+      aria-label="Notifications"
       className="absolute right-0 top-full mt-2 w-[min(90vw,380px)] rounded-xl border border-theme bg-card-theme shadow-lg z-50 flex flex-col max-h-[80vh]"
       data-testid="notification-dropdown"
     >

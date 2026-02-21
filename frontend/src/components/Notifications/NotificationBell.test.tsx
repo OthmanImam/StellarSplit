@@ -1,15 +1,16 @@
+import type { ReactElement } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, it, expect, beforeEach } from "vitest";
 import { NotificationBell } from "./NotificationBell";
-import { useNotificationsStore } from "../../store/notifications";
+import { resetNotificationsForTesting } from "../../test-utils/notifications";
 
-const wrap = (ui: React.ReactElement) =>
+const wrap = (ui: ReactElement) =>
   render(<MemoryRouter>{ui}</MemoryRouter>);
 
 describe("NotificationBell", () => {
   beforeEach(() => {
-    useNotificationsStore.getState().resetForTesting();
+    resetNotificationsForTesting();
   });
 
   it("renders bell icon", () => {
@@ -22,7 +23,7 @@ describe("NotificationBell", () => {
     wrap(<NotificationBell />);
     const badge = screen.getByTestId("notification-badge");
     expect(badge).toBeInTheDocument();
-    expect(badge.textContent).toMatch(/\d+/);
+    expect(Number(badge.textContent)).toBeGreaterThan(0);
   });
 
   it("opens dropdown when bell is clicked", () => {

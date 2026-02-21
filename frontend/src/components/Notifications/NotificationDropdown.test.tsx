@@ -1,15 +1,16 @@
+import type { ReactElement } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, it, expect, beforeEach } from "vitest";
 import { NotificationDropdown } from "./NotificationDropdown";
-import { useNotificationsStore } from "../../store/notifications";
+import { resetNotificationsForTesting } from "../../test-utils/notifications";
 
-const wrap = (ui: React.ReactElement) =>
+const wrap = (ui: ReactElement) =>
   render(<MemoryRouter>{ui}</MemoryRouter>);
 
 describe("NotificationDropdown", () => {
   beforeEach(() => {
-    useNotificationsStore.getState().resetForTesting();
+    resetNotificationsForTesting();
   });
 
   it("renders dropdown with notifications list", () => {
