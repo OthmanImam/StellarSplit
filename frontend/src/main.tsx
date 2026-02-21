@@ -46,11 +46,18 @@ const router = createBrowserRouter([
           return { Component: SplitGroup };
         },
       },
+      {
+        path: "/create-split",
+        lazy: async () => {
+          const { SplitCreationWizard } = await import(
+            "./components/SplitWizard"
+          );
+          return { Component: SplitCreationWizard };
+        },
+      },
     ],
   },
 ]);
-
-
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
