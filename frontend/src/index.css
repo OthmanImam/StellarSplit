@@ -60,6 +60,104 @@
 }
 
 /* ============================================================
+   ACCESSIBILITY: SKIP LINK
+   Allows keyboard users to bypass navigation and jump to main content
+   ============================================================ */
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary);
+  color: white;
+  padding: 8px 16px;
+  z-index: 100;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 0 0 4px 0;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--color-text-light);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   ACCESSIBILITY: FOCUS INDICATORS
+   High contrast focus rings that meet WCAG AA (4.5:1 ratio)
+   ============================================================ */
+
+/* Enhanced focus styles for all interactive elements */
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast focus for buttons */
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(108, 99, 255, 0.3);
+}
+
+/* Focus for links */
+a:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  background-color: rgba(108, 99, 255, 0.1);
+}
+
+/* Focus for form inputs */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 0;
+  border-color: var(--color-primary);
+}
+
+/* Remove default outline, use custom */
+*:focus {
+  outline: none;
+}
+
+/* ============================================================
+   ACCESSIBILITY: PREFER REDUCED MOTION
+   Respect user's motion preferences
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY: VISUALLY HIDDEN (SR-ONLY)
+   For screen reader only content
+   ============================================================ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
    SMOOTH THEME TRANSITION
    Applied globally so every element transitions on theme switch.
    The :not([data-no-transition]) escape hatch lets you opt out

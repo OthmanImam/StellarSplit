@@ -41,14 +41,21 @@ export function ChartExportButton({ targetId, filename }: ChartExportButtonProps
             <button
                 onClick={handleExport}
                 disabled={exporting}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition disabled:opacity-50"
                 title="Export as PNG"
+                aria-label="Export chart as PNG image"
             >
-                <Download className="w-4 h-4" />
+                <Download className="w-4 h-4" aria-hidden="true" />
                 {exporting ? 'Exporting…' : 'Export'}
             </button>
-            {/* Hidden link used to trigger download */}
-            <a ref={linkRef} className="hidden" aria-hidden="true" />
+            {/* Hidden link used to trigger download - hidden from screen readers */}
+            <a 
+                ref={linkRef} 
+                className="hidden" 
+                aria-hidden="true" 
+                href="#" 
+                onClick={(e) => e.preventDefault()}
+            />
         </>
     );
 }
