@@ -38,6 +38,14 @@ const router = createBrowserRouter([
           return { Component: AnalyticsDashboard };
         },
       },
+      {
+        path: "/split-groups",
+        lazy: async () => {
+          const { default: SplitGroup } =
+            await import("./pages/SplitGroup");
+          return { Component: SplitGroup };
+        },
+      },
     ],
   },
 ]);

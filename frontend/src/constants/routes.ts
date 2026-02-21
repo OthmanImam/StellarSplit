@@ -11,4 +11,8 @@ export const ROUTES = [
     to: "/analytics",
     label: "Analytics",
   },
+    {
+    to: "/split-groups",
+    label: "Split Groups",
+  },
 ];
