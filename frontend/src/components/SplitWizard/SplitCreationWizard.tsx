@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Save, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
@@ -30,6 +30,7 @@ const loadDraft = (): WizardState => {
 export const SplitCreationWizard = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const announceRef = useRef<HTMLDivElement>(null);
 
     const [wizardState, setWizardState] = useState<WizardState>(loadDraft);
     const [currentStep, setCurrentStep] = useState(0);
@@ -60,6 +61,13 @@ export const SplitCreationWizard = () => {
 
     const currentStepId = STEP_IDS[currentStep];
     const totalSteps = ALL_STEPS.length;
+
+    // Announce step changes to screen readers
+    useEffect(() => {
+        if (announceRef.current) {
+            announceRef.current.textContent = `Step ${currentStep + 1} of ${totalSteps}: ${ALL_STEPS[currentStep].label}`;
+        }
+    }, [currentStep, totalSteps, ALL_STEPS]);
 
     // Auto-save draft on every state change
     useEffect(() => {
@@ -179,19 +187,28 @@ export const SplitCreationWizard = () => {
     const isLastStep = currentStep === totalSteps - 1;
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            {/* Live region for step announcements */}
+            <div
+                ref={announceRef}
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+                className="sr-only"
+            />
+
             {/* Header */}
-            <div className="sticky top-0 z-20 bg-white border-b border-gray-100 shadow-sm">
+            <div className="sticky top-0 z-20 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 shadow-sm">
                 <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
                     <button
                         type="button"
                         onClick={() => navigate('/dashboard')}
-                        className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+                        className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                         aria-label={t('common.backToDashboard')}
                     >
-                        <ArrowLeft size={20} />
+                        <ArrowLeft size={20} aria-hidden="true" />
                     </button>
-                    <h1 className="text-base font-bold text-gray-900">
+                    <h1 className="text-base font-bold text-gray-900 dark:text-gray-100">
                         {t('wizard.pageTitle')}
                     </h1>
                     <button
@@ -199,11 +216,12 @@ export const SplitCreationWizard = () => {
                         onClick={handleSaveDraft}
                         className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all
                             ${draftSaved
-                                ? 'bg-green-100 text-green-600'
-                                : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                                : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
                             }`}
+                        aria-pressed={draftSaved}
                     >
-                        <Save size={13} />
+                        <Save size={13} aria-hidden="true" />
                         {draftSaved ? t('wizard.draftSaved') : t('wizard.saveDraft')}
                     </button>
                 </div>
@@ -216,15 +234,15 @@ export const SplitCreationWizard = () => {
             </div>
 
             {/* Navigation footer */}
-            <div className="sticky bottom-0 z-20 bg-white border-t border-gray-100 shadow-[0_-2px_12px_rgba(0,0,0,0.06)]">
+            <div className="sticky bottom-0 z-20 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 shadow-[0_-2px_12px_rgba(0,0,0,0.06)]">
                 <div className="max-w-lg mx-auto px-4 py-4 flex items-center gap-3">
                     {currentStep > 0 && (
                         <button
                             type="button"
                             onClick={handleBack}
-                            className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors min-h-[44px]"
+                            className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                         >
-                            <ArrowLeft size={16} />
+                            <ArrowLeft size={16} aria-hidden="true" />
                             {t('wizard.back')}
                         </button>
                     )}
@@ -232,19 +250,20 @@ export const SplitCreationWizard = () => {
                         type="button"
                         onClick={isLastStep ? handleSubmit : handleNext}
                         disabled={isSubmitting}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-600 text-white font-bold text-sm hover:bg-purple-700 active:scale-[0.98] transition-all min-h-[44px] disabled:opacity-60 disabled:cursor-not-allowed"
+                        aria-busy={isSubmitting}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-[var(--color-primary)] text-white font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all min-h-[44px] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)]"
                     >
                         {isSubmitting ? (
                             <span className="animate-pulse">{t('wizard.creating')}</span>
                         ) : isLastStep ? (
                             <>
-                                <CheckCircle size={16} />
+                                <CheckCircle size={16} aria-hidden="true" />
                                 {t('wizard.createSplit')}
                             </>
                         ) : (
                             <>
                                 {t('wizard.next')}
-                                <ArrowRight size={16} />
+                                <ArrowRight size={16} aria-hidden="true" />
                             </>
                         )}
                     </button>
